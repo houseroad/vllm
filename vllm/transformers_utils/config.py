@@ -38,7 +38,7 @@ from vllm.transformers_utils.configs import (ChatGLMConfig, Cohere2Config,
                                              NemotronConfig, NVLM_D_Config,
                                              Olmo2Config, RWConfig,
                                              SolarConfig, Telechat2Config,
-                                             UltravoxConfig)
+                                             UltravoxConfig, DeepseekV3Config)
 # yapf: enable
 from vllm.transformers_utils.utils import check_gguf_file
 from vllm.utils import resolve_obj_by_qualname
@@ -78,6 +78,7 @@ _CONFIG_REGISTRY: Dict[str, Type[PretrainedConfig]] = {
     "solar": SolarConfig,
     "telechat": Telechat2Config,
     "ultravox": UltravoxConfig,
+    "deepseek_v3": DeepseekV3Config,
     **_CONFIG_REGISTRY_OVERRIDE_HF
 }
 
