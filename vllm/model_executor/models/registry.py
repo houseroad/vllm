@@ -25,6 +25,7 @@ from .interfaces import (has_inner_state, is_attention_free, is_hybrid,
                          supports_cross_encoding, supports_multimodal,
                          supports_pp, supports_transcription, supports_v0_only)
 from .interfaces_base import is_text_generation_model
+from vllm.fb.models.registry import META_MODELS
 
 logger = init_logger(__name__)
 
@@ -525,6 +526,15 @@ ModelRegistry = _ModelRegistry({
         class_name=cls_name,
     )
     for model_arch, (mod_relname, cls_name) in _VLLM_MODELS.items()
+} | {
+    # META only changes to inject customized models
+    # TODO(T213502779) register_model does not in v1 due to multiprocessing.
+    # Need to fix the custom model registration flow in vLLM.
+    model_arch: _LazyRegisteredModel(
+        module_name=f"fb.models.{mod_relname}",
+        class_name=cls_name,
+    )
+    for model_arch, (mod_relname, cls_name) in META_MODELS.items()
 })
 
 _T = TypeVar("_T")

@@ -4,7 +4,7 @@ import asyncio
 import logging
 import os
 from collections.abc import AsyncGenerator, Mapping
-from typing import Optional, Union
+from typing import AsyncGenerator, List, Mapping, Optional, Type, Union, Dict, Set
 
 import numpy as np
 
@@ -48,6 +48,7 @@ class AsyncLLM(EngineClient):
         use_cached_outputs: bool = False,
         log_requests: bool = True,
         start_engine_loop: bool = True,
+        stat_loggers: Optional[Dict[str, StatLoggerBase]] = None,
     ) -> None:
 
         assert start_engine_loop
@@ -56,11 +57,10 @@ class AsyncLLM(EngineClient):
 
         self.log_requests = log_requests
         self.log_stats = log_stats
-        self.stat_loggers: list[StatLoggerBase] = []
-        if self.log_stats:
-            if logger.isEnabledFor(logging.INFO):
-                self.stat_loggers.append(LoggingStatLogger())
-            self.stat_loggers.append(PrometheusStatLogger(vllm_config))
+        self.stat_loggers: Dict[str, StatLoggerBase] = stat_loggers if stat_loggers else {
+            "logging": LoggingStatLogger(),
+            "prometheus_logging": PrometheusStatLogger(vllm_config.model_config),
+        }
 
         # Tokenizer (+ ensure liveness if running in another process).
         self.tokenizer = init_tokenizer_from_configs(
@@ -101,6 +101,7 @@ class AsyncLLM(EngineClient):
         engine_config: Optional[VllmConfig] = None,
         start_engine_loop: bool = True,
         usage_context: UsageContext = UsageContext.ENGINE_CONTEXT,
+        stat_loggers: Optional[Dict[str, StatLoggerBase]] = None,
     ) -> "AsyncLLM":
         """Create an AsyncLLM from the EngineArgs."""
 
@@ -120,6 +121,7 @@ class AsyncLLM(EngineClient):
             log_stats=not engine_args.disable_log_stats,
             start_engine_loop=start_engine_loop,
             usage_context=usage_context,
+            stat_loggers=stat_loggers,
         )
 
     def shutdown(self):
@@ -316,9 +318,9 @@ class AsyncLLM(EngineClient):
 
         assert scheduler_stats is not None
         assert iteration_stats is not None
-        for stat_logger in self.stat_loggers:
-            stat_logger.record(scheduler_stats=scheduler_stats,
-                               iteration_stats=iteration_stats)
+        for logger in self.stat_loggers.values():
+            logger.log(scheduler_stats=scheduler_stats,
+                       iteration_stats=iteration_stats)
 
     def encode(
         self,
