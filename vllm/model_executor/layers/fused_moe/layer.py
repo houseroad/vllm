@@ -66,7 +66,6 @@ class FusedMoEMethodBase(QuantizeMethodBase):
         custom_routing_function: Optional[Callable] = None,
         scoring_func: str = "softmax",
         e_score_correction_bias: Optional[torch.Tensor] = None,
-        apply_router_weight_on_input: bool = False,
     ) -> torch.Tensor:
         raise NotImplementedError
 
