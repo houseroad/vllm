@@ -500,8 +500,6 @@ class FusedMoE(torch.nn.Module):
             self.quant_method = quant_config.get_quant_method(self, prefix)
         assert self.quant_method is not None
 
-        # This is hacky, we should really refactor FusedMoEMethodBase
-        assert isinstance(self.quant_method, FusedMoEMethodBase)
         self.apply_router_weight_on_input = apply_router_weight_on_input
         moe_quant_params = {
             "num_experts": self.local_num_experts,
