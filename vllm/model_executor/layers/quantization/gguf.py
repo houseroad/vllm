@@ -338,8 +338,8 @@ class GGUFMoEMethod(FusedMoEMethodBase):
         custom_routing_function: Optional[Callable] = None,
         scoring_func: str = "softmax",
         e_score_correction_bias: Optional[torch.Tensor] = None,
-        activation: str = "silu",
         apply_router_weight_on_input: bool = False,
+        activation: str = "silu",
     ):
         assert activation == "silu", "Only SiLU activation is supported."
         if apply_router_weight_on_input:
