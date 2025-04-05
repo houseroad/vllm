@@ -202,6 +202,7 @@ class QuarkW8A8Fp8MoEMethod(QuarkMoEMethod):
         custom_routing_function: Optional[Callable] = None,
         scoring_func: str = "softmax",
         e_score_correction_bias: Optional[torch.Tensor] = None,
+        apply_router_weight_on_input: bool = False,
     ) -> torch.Tensor:
         from vllm.model_executor.layers.fused_moe import fused_experts
 
@@ -225,6 +226,7 @@ class QuarkW8A8Fp8MoEMethod(QuarkMoEMethod):
                              inplace=True,
                              use_fp8_w8a8=True,
                              global_num_experts=global_num_experts,
+                             apply_router_weight_on_input=apply_router_weight_on_input,
                              expert_map=expert_map,
                              w1_scale=layer.w13_weight_scale,
                              w2_scale=layer.w2_weight_scale,

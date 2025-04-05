@@ -114,6 +114,7 @@ class ExpertsInt8MoEMethod(FusedMoEMethodBase):
         scoring_func: str = "softmax",
         e_score_correction_bias: Optional[torch.Tensor] = None,
         activation: str = "silu",
+        apply_router_weight_on_input: bool = False,
     ) -> torch.Tensor:
         from vllm.model_executor.layers.fused_moe import fused_experts
 
@@ -138,6 +139,7 @@ class ExpertsInt8MoEMethod(FusedMoEMethodBase):
                              activation=activation,
                              use_int8_w8a16=True,
                              global_num_experts=global_num_experts,
+                             apply_router_weight_on_input=apply_router_weight_on_input,
                              expert_map=expert_map,
                              w1_scale=layer.w13_scale,
                              w2_scale=layer.w2_scale)

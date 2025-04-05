@@ -339,8 +339,14 @@ class GGUFMoEMethod(FusedMoEMethodBase):
         scoring_func: str = "softmax",
         e_score_correction_bias: Optional[torch.Tensor] = None,
         activation: str = "silu",
+        apply_router_weight_on_input: bool = False,
     ):
         assert activation == "silu", "Only SiLU activation is supported."
+        if apply_router_weight_on_input:
+            raise NotImplementedError(
+                "Apply router weight on input is not supported for"
+                "fused GGUF MoE method.")
+
         topk_weights, topk_ids = FusedMoE.select_experts(
             hidden_states=x,
             router_logits=router_logits,

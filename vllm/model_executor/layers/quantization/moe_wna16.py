@@ -294,6 +294,7 @@ class MoeWNA16Method(FusedMoEMethodBase):
         scoring_func: str = "softmax",
         e_score_correction_bias: Optional[torch.Tensor] = None,
         activation: str = "silu",
+        apply_router_weight_on_input: bool = False,
     ) -> torch.Tensor:
         from vllm.model_executor.layers.fused_moe import fused_experts
         assert activation == "silu", "Only SiLU activation is supported."
@@ -321,6 +322,7 @@ class MoeWNA16Method(FusedMoEMethodBase):
                              use_int4_w4a16=weight_bits == 4,
                              use_int8_w8a16=weight_bits == 8,
                              global_num_experts=global_num_experts,
+                             apply_router_weight_on_input=apply_router_weight_on_input,
                              expert_map=expert_map,
                              w1_scale=layer.w13_scales,
                              w2_scale=layer.w2_scales,

@@ -593,8 +593,13 @@ class GPTQMarlinMoEMethod(FusedMoEMethodBase):
         scoring_func: str = "softmax",
         e_score_correction_bias: Optional[torch.Tensor] = None,
         activation: str = "silu",
+        apply_router_weight_on_input: bool = False,
     ) -> torch.Tensor:
         assert activation == "silu", "Only SiLU activation is supported."
+        if apply_router_weight_on_input is not None:
+            raise NotImplementedError(
+                "Apply router weight on input is not supported for"
+                "fused Marlin MoE method.")
 
         # The input must currently be float16
         orig_dtype = x.dtype
