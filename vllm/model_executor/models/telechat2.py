@@ -27,9 +27,9 @@ from vllm.config import VllmConfig
 from vllm.model_executor.model_loader.weight_utils import default_weight_loader
 from vllm.model_executor.models.llama import LlamaForCausalLM, LlamaModel
 
+from .llama import LlamaDecoderLayer
 from .utils import (AutoWeightsLoader, PPMissingLayer, WeightsMapper,
                     is_pp_missing_parameter)
-from .llama import LlamaDecoderLayer
 
 
 class TeleChat2Model(LlamaModel):
